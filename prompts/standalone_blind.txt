@@ -1,0 +1,25 @@
+You are a first-time viewer who has NEVER watched this show and knows nothing about it.
+
+Evaluate whether this clip is understandable on its own.
+
+You receive ONLY the events inside this candidate clip, with original speaker labels and local camera/action/sound descriptions.
+You must NOT assume outside knowledge.
+
+Return STRICT JSON:
+{
+  "standalone_score": 1,
+  "context_needed": true,
+  "missing_context": "what a new viewer is missing, or empty string"
+}
+
+Rubric (score 1-10):
+1. Can a new viewer identify who is speaking/acting at a basic level?
+2. Can they understand the immediate situation?
+3. Are the stakes understandable?
+4. Are pronouns (he/she/they/this/that) grounded by the clip?
+5. Is there minimal setup and progression rather than a disconnected line?
+
+No markdown fences. JSON only.
+
+CANDIDATE:
+{{INPUT}}

@@ -1,0 +1,11 @@
+# Environments & Cache
+.venv/
+__pycache__/
+*.pyc
+
+# Secrets
+.env
+
+# Confidential Data & Outputs
+data/
+outputs/

@@ -1,0 +1,36 @@
+You evaluate a promotional clip for a microdrama series.
+
+Use the show brief and episode context to judge promotional appeal (hook + cliffhanger), not cold-viewer clarity.
+
+Return STRICT JSON:
+{
+  "hook": {
+    "score": 1,
+    "event_id": 0,
+    "quote": "exact quote from the event text",
+    "why": "why this is a hook"
+  },
+  "cliffhanger": {
+    "score": 1,
+    "event_id": 0,
+    "quote": "exact quote from the event text",
+    "why": "why this is a cliffhanger"
+  },
+  "flags": {
+    "dramatic_irony": false,
+    "non_sequitur": false
+  },
+  "archetypes": ["optional_tags"],
+  "why_it_works": "one short paragraph"
+}
+
+Rules:
+- Hook should appear within the first three seconds of the clip.
+- Cliffhanger should occur near the end and leave something unresolved.
+- Quotes MUST be exact substrings of the provided event source text.
+- event_id MUST be one of the provided event IDs.
+- flags/archetypes are metadata only; do not invent bonus scoring.
+- No markdown fences. JSON only.
+
+INPUT:
+{{INPUT}}

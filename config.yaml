@@ -1,0 +1,84 @@
+app:
+  name: "Kuku Narrative-Aware Promo Finder"
+  top_n_promos: 15
+  max_candidates_per_episode: 3
+  max_promos_per_episode: 2
+
+windows:
+  min_duration_sec: 20.0
+  max_duration_sec: 60.0
+  hook_zone_sec: 3.0
+  cliffhanger_final_zone_sec: 5.0
+  max_cliffhanger_events: 2
+
+prefilter:
+  enable_dynamic_lexicon: true
+  nms_metric: "intersection_over_shorter"
+  nms_threshold: 0.35
+  universal_conflict_terms:
+    - stop
+    - leave
+    - get out
+    - how dare
+    - lied
+    - betrayed
+    - marry
+    - divorce
+    - pregnant
+    - dead
+    - kill
+    - blood
+    - slap
+    - struck
+    - steal
+    - arrest
+    - police
+    - guards
+    - prison
+    - secret
+    - truth
+  weights:
+    hook_dialogue_or_action: 2.0
+    hook_universal_term: 2.0
+    hook_dynamic_lexicon: 1.5
+    hook_intensity_tag: 1.5
+    hook_punchy_dialogue: 1.5
+    hook_interruption: 1.0
+    cliff_abrupt_marker: 2.5
+    cliff_unanswered_question: 2.0
+    cliff_dynamic_lexicon: 1.5
+    cliff_resolution_penalty: -3.0
+    ground_relationship_nouns: 2.0
+    ground_named_speakers: 1.0
+    ground_ungrounded_pronoun_penalty: -1.5
+
+scoring:
+  hook_weight: 0.40
+  cliffhanger_weight: 0.35
+  standalone_weight: 0.25
+  strong_score_threshold: 7
+
+extension:
+  enabled: true
+  max_preceding_events: 2
+  max_attempts: 1
+  require_standalone_improvement: true
+
+llm:
+  temperature: 0
+  max_concurrency: 2
+  timeout_seconds: 90
+  retry_attempts: 1
+  retry_with_validation_error: true
+
+reliability:
+  checkpoint_file: "checkpoint_scored.jsonl"
+  resume_enabled_by_default: false
+  save_raw_responses: true
+
+output:
+  save_json: true
+  save_csv: true
+  save_failures: true
+  save_quality_report: true
+  save_run_log: true

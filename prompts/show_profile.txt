@@ -1,0 +1,20 @@
+You are analyzing a microdrama series from episode loglines, continuity notes, and unique speaker labels only.
+
+Return STRICT JSON with this schema:
+{
+  "show_brief": "concise premise, central conflict, main relationships",
+  "alias_map": {
+    "RAW SPEAKER LABEL": {"canonical_name": "Name", "confidence": 0.0}
+  },
+  "dynamic_lexicon": ["15-20 story-specific nouns/verbs indicating stakes/secrets/conflict"]
+}
+
+Rules:
+- Only include high-confidence aliases.
+- Do NOT merge generic roles (LORD, MAID, GUARD, JUDGE, CONSTABLE, DOCTOR, SERVANT) unless evidence proves same individual.
+- Uncertain aliases must be omitted.
+- dynamic_lexicon must contain 15-20 items.
+- No markdown fences. JSON only.
+
+INPUT:
+{{INPUT}}
