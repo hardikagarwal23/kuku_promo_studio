@@ -63,7 +63,7 @@ async def build_show_profile(
 
     async def _call(prompt: str) -> str:
         # Route to 120b to bypass the 21-minute lockout on 20b
-        return await client.complete(prompt, stage="show_profile", model_override="openai/gpt-oss-120b")
+        return await client.complete(prompt, stage="show_profile")
 
     parsed, raw, err = await validate_with_retry(
         call_fn=_call,
