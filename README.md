@@ -34,7 +34,7 @@ streamlit run app.py
 1. Parse screenplays → structured events (+ camera metadata)
 2. Show profile (LLM)
 3. Generate continuous 20–60s event-boundary candidates
-4. Recall-first prefilter + temporal NMS (IoS ≥ 0.40)
+4. Recall-first prefilter + temporal NMS (IoS ≥ 0.35)
 5. Blind standalone + contextual hook/cliffhanger scorers (concurrent)
 6. Conditional contiguous start extension (at most once)
 7. Hard validation + deterministic weighted ranking, capped at 2 promos per episode
