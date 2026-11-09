@@ -131,7 +131,7 @@ async def score_standalone_blind(
     assert_blind_prompt_isolated(payload)
 
     async def _call(prompt: str) -> str:
-       return await client.complete(prompt, stage=stage_name, model_override="openai/gpt-oss-120b")
+       return await client.complete(prompt, stage=stage_name)
 
     parsed, raw, err = await validate_with_retry(
         call_fn=_call,
@@ -155,6 +155,44 @@ async def score_standalone_blind(
         )
     return parsed, raw, err
 
+async def score_candidate_pair(
+    client: LLMClient,
+    candidate: CandidateWindow,
+    events: list[ParsedEvent],
+    *,
+    show_profile: ShowProfile,
+    episode: ParsedEpisode,
+    run_dir: Path | None = None,
+    settings: AppSettings | None = None,
+) -> ScoredCandidate:
+    settings = settings or get_settings()
+    
+    # 1. Run Blind Standalone first
+    standalone, raw_stand, stand_err = await score_standalone_blind(
+        client, candidate, events, run_dir=run_dir, settings=settings
+    )
+    
+    # 2. Proceed to Hook & Cliffhanger
+    contextual, raw_ctx, ctx_err = await score_hook_cliffhanger(
+        client,
+        candidate,
+        events,
+        show_profile=show_profile,
+        episode=episode,
+        run_dir=run_dir,
+        settings=settings,
+    )
+
+    failed = standalone is None or contextual is None
+    err_parts = [e for e in (stand_err, ctx_err) if e]
+    return ScoredCandidate(
+        candidate=candidate,
+        standalone=standalone,
+        contextual=contextual,
+        llm_failed=failed,
+        llm_error="; ".join(err_parts) if err_parts else None,
+        events=events,
+    )
 
 async def score_hook_cliffhanger(
     client: LLMClient,
@@ -198,48 +236,6 @@ async def score_hook_cliffhanger(
         )
     return parsed, raw, err
 
-
-async def score_candidate_pair(
-    client: LLMClient,
-    candidate: CandidateWindow,
-    events: list[ParsedEvent],
-    *,
-    show_profile: ShowProfile,
-    episode: ParsedEpisode,
-    run_dir: Path | None = None,
-    settings: AppSettings | None = None,
-) -> ScoredCandidate:
-    """Run only Stage 5B to halve API costs, mocking Stage 5A."""
-    settings = settings or get_settings()
-    
-    # 1. OPTIMIZATION: Bypass the blind standalone LLM call entirely.
-    # We assign a default passing score of 8 to satisfy the pipeline math.
-    from src.schemas import StandaloneEvaluation
-    standalone = StandaloneEvaluation(standalone_score=8, context_needed=False)
-    stand_err = None
-    
-    # 2. Only execute the Contextual Hook/Cliffhanger LLM call
-    contextual, raw_ctx, ctx_err = await score_hook_cliffhanger(
-        client,
-        candidate,
-        events,
-        show_profile=show_profile,
-        episode=episode,
-        run_dir=run_dir,
-        settings=settings,
-    )
-
-    failed = standalone is None or contextual is None
-    err_parts = [e for e in (stand_err, ctx_err) if e]
-    return ScoredCandidate(
-        candidate=candidate,
-        standalone=standalone,
-        contextual=contextual,
-        llm_failed=failed,
-        llm_error="; ".join(err_parts) if err_parts else None,
-        events=events,
-    )
-    
 
 def composite_score(
     hook: int, cliffhanger: int, standalone: int, settings: AppSettings | None = None

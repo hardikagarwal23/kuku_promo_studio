@@ -17,7 +17,7 @@ PROMPTS_DIR = Path(__file__).resolve().parent.parent / "prompts"
 # Rate limiter for 15 RPM (1 request every 4.0 seconds, padded to 4.2)
 _RATE_LIMIT_LOCK = asyncio.Lock()
 _LAST_CALL_TIME = 0.0
-_MIN_REQUEST_INTERVAL = 4.2  
+_MIN_REQUEST_INTERVAL = 4.5
 
 class LLMClient:
     """Small provider wrapper. Never hardcodes keys or models in callers."""
